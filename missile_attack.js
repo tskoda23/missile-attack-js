@@ -3,8 +3,11 @@ const _CONTEXT = _GAME.getContext("2d");
 const _W_GAME = 1366;
 const _H_GAME = 720;
 
-const _W_GUN = 64;
-const _H_GUN = 64;
+const _W_GUN = 76;
+const _H_GUN = 256;
+
+const _W_ROCKET = 86;
+const _H_ROCKET = 256
 
 const _GAME_FPS = 16; // 60 fps
 
@@ -26,17 +29,27 @@ const drawEnvironement = () => {
   _CONTEXT.fillRect(0, 0, _W_GAME, _H_GAME);
 };
 
+const drawDot = (x, y) =>{
+    _CONTEXT.arc(x, y, 5, 0, 2 * Math.PI);
+    _CONTEXT.fillStyle = 'red';
+    _CONTEXT.fill();
+};
 const renderGun = () => {
     const floatH = 10;
     const posY = (_H_GAME - _H_GUN) - floatH;
     const posX = (_W_GAME / 2) - (_W_GUN / 2);
 
+    const gunRotX = posX + (_W_GUN / 2);
+    const gunRotY = posY + _H_GUN;
 
     _CONTEXT.save();
-    // _CONTEXT.translate(posX,posY);
-    // _CONTEXT.rotate(_GUN_ROTATE_DEGS);
-    // _CONTEXT.translate(-gun.width/2,-gun.height/2);
+    drawEnvironement();
+    drawDot(gunRotX, gunRotY);
+    _CONTEXT.translate(gunRotX, gunRotY);
+    _CONTEXT.rotate(_GUN_ROTATE_DEGS * Math.PI / 360);
+    _CONTEXT.translate(-gunRotX, -gunRotY);
     _CONTEXT.drawImage(gun, posX, posY, _W_GUN, _H_GUN);
+
     _CONTEXT.restore();
   
 };
@@ -60,8 +73,6 @@ function checkKey(e) {
     	goLeft();
     }
 }
-
-// drawEnvironement();
 
 setInterval(()=>{
   renderGun();
