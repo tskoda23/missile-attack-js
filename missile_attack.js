@@ -1,15 +1,19 @@
 const _GAME = document.getElementById("game");
 const _CONTEXT = _GAME.getContext("2d");
+
 const _W_GAME = 1366;
 const _H_GAME = 720;
 
 const _W_GUN = 76;
 const _H_GUN = 256;
 
-const _W_ROCKET = 86;
-const _H_ROCKET = 256;
+const _W_ROCKET = 86 / 3;
+const _H_ROCKET = 256 / 3;
 
-const _GAME_FPS = 24; // 60 fps
+// THIS SHOULDN'T CHANGE GAME SPEED?
+
+const _GAME_FPS = 120;
+const _ROCKET_SPEED = 10;
 
 const drawDot = (x, y) => {
   _CONTEXT.arc(x, y, 5, 0, 2 * Math.PI);
@@ -24,8 +28,6 @@ const renderGame = () => {
   renderRocket();
 };
 
-// GUN
-
 let _GUN_ROTATE_DEGS = 0;
 
 const gun = new Image(_W_GUN, _H_GUN);
@@ -35,7 +37,6 @@ gun.onload = () => {
 };
 
 const renderGun = () => {
-  // SEPARATE THE STUFF THAT CHANTGES
   _CONTEXT.save();
   const floatH = 10;
   const posY = _H_GAME - _H_GUN - floatH;
@@ -64,20 +65,12 @@ let _ROCKET_FIRED = false;
 let _ROCKETS = [];
 
 const fireRocket = () => {
-  console.log(`add new rocket with deg: ${_GUN_ROTATE_DEGS}`);
   _ROCKETS.push({
     degs: _GUN_ROTATE_DEGS,
     fired: true,
     distance: 0,
     destroyed: false,
   });
-
-  console.log(_ROCKETS);
-
-  // when we press space we take the current gun direction and set that for rocket direction
-  // CREATE ROCKET AT THE SAME POINT WHERE THE GUN IS
-  // SEND IT IN THE DIRECTION THAT GUN POINTS TO
-  console.log("FIRE ROCKET");
 };
 
 const _ROCKET = new Image(_W_ROCKET, _H_ROCKET);
@@ -85,8 +78,6 @@ _ROCKET.src = "rocket.png";
 _ROCKET.onload = () => {
   this.ready = true;
 };
-
-const _ROCKET_SPEED = 5;
 
 const renderRocket = () => {
   for (const rocket of _ROCKETS) {
@@ -110,6 +101,8 @@ const renderRocket = () => {
       _CONTEXT.drawImage(_ROCKET, moveX, moveY, _W_ROCKET, _H_ROCKET);
 
       rocket.distance += _ROCKET_SPEED;
+
+      // CHANGE THIS TO ADD COLLISIONS
       if (rocket.distance > 500) {
         rocket.destroyed = true;
       }
@@ -138,10 +131,6 @@ const checkKeysPressed = () => {
   if (_PRESSED_KEYS[_LEFT_ARROW]) {
     goLeft();
   }
-
-  // if (_PRESSED_KEYS[_SPACEBAR]) {
-  //   fireRocket();
-  // }
 };
 
 const checkKeyDown = (e) => {
@@ -160,7 +149,6 @@ const checkKeyDown = (e) => {
 };
 
 const checkKeyUp = (e) => {
-  console.log(e.key);
   if (e.key === _RIGHT_ARROW) {
     _PRESSED_KEYS[_RIGHT_ARROW] = false;
   }
@@ -168,15 +156,13 @@ const checkKeyUp = (e) => {
   if (e.key === _LEFT_ARROW) {
     _PRESSED_KEYS[_LEFT_ARROW] = false;
   }
-
-  // if (e.key === _SPACEBAR) {
-  //   _PRESSED_KEYS[_SPACEBAR] = false;
-  // }
 };
 
 document.addEventListener("keydown", checkKeyDown);
 document.addEventListener("keyup", checkKeyUp);
 
+_RENDER_INTERVAL = 1000 / _GAME_FPS;
+
 setInterval(() => {
   renderGame();
-}, _GAME_FPS);
+}, _RENDER_INTERVAL);
