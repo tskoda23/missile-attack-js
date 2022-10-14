@@ -10,9 +10,9 @@ const _H_GUN = 256;
 const _W_ROCKET = 86 / 3;
 const _H_ROCKET = 256 / 3;
 
-// THIS SHOULDN'T CHANGE GAME SPEED?
+// THIS SHOULDN'T CHANGE THE GAME SPEED?
 
-const _GAME_FPS = 120;
+const _GAME_FPS = 30;
 const _ROCKET_SPEED = 10;
 
 const drawDot = (x, y) => {
@@ -45,6 +45,7 @@ const renderGun = () => {
     const gunRotX = posX + _W_GUN / 2;
     const gunRotY = posY + _H_GUN;
     drawDot(gunRotX, gunRotY);
+
     _CONTEXT.translate(gunRotX, gunRotY);
     _CONTEXT.rotate((_GUN_ROTATE_DEGS * Math.PI) / 360);
     _CONTEXT.translate(-gunRotX, -gunRotY);
@@ -80,7 +81,7 @@ _ROCKET.onload = () => {
 const renderRocket = () => {
     let index = 0;
     let arrlen = _ROCKETS.length;
-
+    console.log(arrlen);
     while (index < arrlen) {
         const rocket = _ROCKETS[index];
         if (rocket) {
@@ -187,6 +188,10 @@ setGameSize();
 addEventListener("resize", (event) => {
     setGameSize();
 });
+
+// const _PAUSE = false;
+
+// while (!_PAUSE) {}
 
 setInterval(() => {
     renderGame();
